@@ -18,11 +18,24 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-webflux") {
+	implementation("org.springframework.boot:spring-boot-starter-web") {
 		exclude(module = "spring-boot-starter-tomcat")
 	}
 	implementation("org.springframework.boot:spring-boot-starter-undertow")
 	implementation("org.springframework.boot:spring-boot-starter")
+
+	//Parsing
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+	//Tokens
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+	//DB
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
+	runtimeOnly("org.postgresql:postgresql")
 
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -38,4 +51,10 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.jar {
+	manifest {
+		attributes["Main-Class"] = "ru.mobile.art.mobileArtBackend.MobileArtBackendApplication"
+	}
 }
