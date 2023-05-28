@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import ru.mobile.art.mobileArtBackend.dto.auth.EmailRegisterRequestDTO
-import ru.mobile.art.mobileArtBackend.dto.auth.AuthUserResponseDTO
-import ru.mobile.art.mobileArtBackend.dto.auth.EmailLoginUserRequestDTO
-import ru.mobile.art.mobileArtBackend.dto.auth.VKLoginRequestDTO
+import ru.mobile.art.mobileArtBackend.dto.auth.*
 import ru.mobile.art.mobileArtBackend.model.emailPattern
 import ru.mobile.art.mobileArtBackend.model.exceptions.ValidationException
 import ru.mobile.art.mobileArtBackend.model.invalidEmailMessage
@@ -24,6 +21,14 @@ class AuthController @Autowired constructor(
     ): AuthUserResponseDTO {
         validateEmail(registerUserRequestDTO.email)
         return userService.registerUserByEmail(registerUserRequestDTO)
+    }
+
+    @PostMapping("/auth/register/vk")
+    fun registerUserVK(
+        @RequestBody registerUserRequestDTO: VKRegisterRequestDTO
+    ): AuthUserResponseDTO {
+        validateEmail(registerUserRequestDTO.email)
+        return userService.registerUserByVK(registerUserRequestDTO)
     }
 
     @PostMapping("/auth/login/email")

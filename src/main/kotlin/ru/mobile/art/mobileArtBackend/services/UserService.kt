@@ -3,10 +3,7 @@ package ru.mobile.art.mobileArtBackend.services
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.mobile.art.mobileArtBackend.dto.auth.EmailRegisterRequestDTO
-import ru.mobile.art.mobileArtBackend.dto.auth.AuthUserResponseDTO
-import ru.mobile.art.mobileArtBackend.dto.auth.EmailLoginUserRequestDTO
-import ru.mobile.art.mobileArtBackend.dto.auth.VKLoginRequestDTO
+import ru.mobile.art.mobileArtBackend.dto.auth.*
 import ru.mobile.art.mobileArtBackend.model.entities.DataBaseUser
 import ru.mobile.art.mobileArtBackend.model.exceptions.UserAlreadyExistException
 import ru.mobile.art.mobileArtBackend.model.exceptions.UserNotFoundException
@@ -33,6 +30,25 @@ class UserService @Autowired constructor(
             }
             else -> throw UserAlreadyExistException()
         }
+    }
+
+    @Transactional
+    fun registerUserByVK(request: VKRegisterRequestDTO): AuthUserResponseDTO {
+        val userId = when(val dbUser = usersRepository.findByvkToken(request.email)) {
+            null -> {
+                val newUser = DataBaseUser(
+                    email = request.email,
+                    password = request.password,
+                    name = request.name,
+                    birthDate = request.birthDate,
+                    vkToken = request.token
+                )
+                usersRepository.save(newUser).id!!
+            }
+            else -> dbUser.id!!
+        }
+        val token = accessTokenService.createToken(userId)
+        return AuthUserResponseDTO(accessToken = token)
     }
 
     @Transactional

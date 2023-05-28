@@ -15,9 +15,7 @@ class DBNewsLoader @Autowired constructor(
 
     @Transactional
     override fun run(args: ApplicationArguments?) {
-        val allNews = newsRepository.findAll()
-        if (allNews.isEmpty()) {
-            newsRepository.saveAll(allTestNews)
-        }
+        newsRepository.deleteAll()
+        newsRepository.saveAll(allTestNews)
     }
 }

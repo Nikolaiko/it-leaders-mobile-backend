@@ -15,6 +15,10 @@ data class NewsInfo(
     val category: NewsCategory = NewsCategory.art,
     val newsThumbnail: String? = null,
     val title: String = "",
+
+    @Column(length = 5048)
     val shortText: String = "",
+
+    @Column(length = 5048)
     val content: String = ""
 )
