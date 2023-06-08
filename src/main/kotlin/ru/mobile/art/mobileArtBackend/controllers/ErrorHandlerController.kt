@@ -38,7 +38,7 @@ class ErrorHandlerController {
     }
 
     @ExceptionHandler
-    fun userNotFoundHandler(exception: ValidationException): ResponseEntity<ErrorMessageDTO> {
+    fun validationExceptionHandler(exception: ValidationException): ResponseEntity<ErrorMessageDTO> {
         return ResponseEntity(
             ErrorMessageDTO(exception.message),
             HttpStatus.UNPROCESSABLE_ENTITY

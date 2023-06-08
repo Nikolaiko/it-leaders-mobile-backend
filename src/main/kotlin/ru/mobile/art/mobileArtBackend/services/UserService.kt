@@ -1,12 +1,19 @@
 package ru.mobile.art.mobileArtBackend.services
 
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.mobile.art.mobileArtBackend.dto.auth.*
+import ru.mobile.art.mobileArtBackend.dto.user.UserDataResponseDTO
+import ru.mobile.art.mobileArtBackend.dto.user.UserInterestsDTO
 import ru.mobile.art.mobileArtBackend.model.entities.DataBaseUser
 import ru.mobile.art.mobileArtBackend.model.exceptions.UserAlreadyExistException
 import ru.mobile.art.mobileArtBackend.model.exceptions.UserNotFoundException
+import ru.mobile.art.mobileArtBackend.model.exceptions.ValidationException
+import ru.mobile.art.mobileArtBackend.model.news.NewsCategory
+import ru.mobile.art.mobileArtBackend.model.wrongEnumValueMessage
+import ru.mobile.art.mobileArtBackend.model.wrongTokenMessage
 import ru.mobile.art.mobileArtBackend.repositories.UsersRepository
 
 @Service
@@ -56,8 +63,7 @@ class UserService @Autowired constructor(
         val foundUser = usersRepository.findByEmail(request.email)
         return when {
             foundUser != null && foundUser.password == request.password -> {
-                val newId: Long = usersRepository.save(foundUser).id!!
-                val token = accessTokenService.createToken(newId)
+                val token = accessTokenService.createToken(foundUser.id!!)
                 AuthUserResponseDTO(accessToken = token)
             }
             else -> throw  UserNotFoundException()
@@ -74,6 +80,50 @@ class UserService @Autowired constructor(
                 val token = accessTokenService.createToken(newId)
                 AuthUserResponseDTO(accessToken = token)
             }
+        }
+    }
+
+    @Transactional
+    fun setUserInterests(token: String, interests: UserInterestsDTO): UserDataResponseDTO {
+        val id: Long = getIdFromToken(token)
+        val userFromDb = getUserById(id)
+        val interestsString = interests.interests.map { it.name }
+        val newUser = DataBaseUser(
+            id = userFromDb.id,
+            avatarUrl = userFromDb.avatarUrl,
+            name = userFromDb.name,
+            birthDate = userFromDb.birthDate,
+            email = userFromDb.email,
+            password = userFromDb.password,
+            vkToken = userFromDb.vkToken,
+            interests = interestsString.joinToString(",")
+        )
+        return usersRepository.save(newUser).toUserDataResponseDTO()
+    }
+
+    @Transactional
+    fun getUserData(token: String): UserDataResponseDTO {
+        val id: Long = getIdFromToken(token)
+        val response = getUserById(id)
+        return response.toUserDataResponseDTO()
+    }
+
+    private fun getUserById(id: Long): DataBaseUser = try {
+        usersRepository.getReferenceById(id)
+    } catch (notFound: EntityNotFoundException) {
+        throw UserNotFoundException()
+    }
+
+    private fun getIdFromToken(token: String): Long {
+        val tokenParts = token.split(" ")
+        return try {
+            val tokenValue = tokenParts[1]
+            val idString = accessTokenService.claimIdFromToken(tokenValue)
+            idString.toLong()
+        } catch (outOfBounds: IndexOutOfBoundsException) {
+            throw ValidationException(wrongTokenMessage)
+        } catch (wrongFormat: NumberFormatException) {
+            throw ValidationException(wrongTokenMessage)
         }
     }
 }
