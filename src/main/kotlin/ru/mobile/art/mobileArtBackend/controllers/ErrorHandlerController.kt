@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.mobile.art.mobileArtBackend.dto.ErrorMessageDTO
-import ru.mobile.art.mobileArtBackend.model.exceptions.NewsNotFoundException
-import ru.mobile.art.mobileArtBackend.model.exceptions.UserAlreadyExistException
-import ru.mobile.art.mobileArtBackend.model.exceptions.UserNotFoundException
-import ru.mobile.art.mobileArtBackend.model.exceptions.ValidationException
+import ru.mobile.art.mobileArtBackend.model.exceptions.*
 
 @RestControllerAdvice
 class ErrorHandlerController {
@@ -42,6 +39,14 @@ class ErrorHandlerController {
         return ResponseEntity(
             ErrorMessageDTO(exception.message),
             HttpStatus.UNPROCESSABLE_ENTITY
+        )
+    }
+
+    @ExceptionHandler
+    fun testsExceptionHandler(exception: TestsNotFoundException): ResponseEntity<ErrorMessageDTO> {
+        return ResponseEntity(
+            ErrorMessageDTO(exception.message),
+            HttpStatus.NOT_FOUND
         )
     }
 }

@@ -12,21 +12,22 @@ class EducationTest constructor(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    var difficulty: TestDifficulty,
-    var category: NewsCategory,
+    var difficulty: TestDifficulty = TestDifficulty.Lite,
+    var category: NewsCategory = NewsCategory.music,
+    var score: Int = 0,
 
     @Column(length = 5048)
-    var text: String,
+    var text: String = "",
 
     @Column(length = 5048)
-    var correctAnswerText: String,
+    var correctAnswerText: String = "",
 
     @Column(length = 5048)
-    var wrongAnswerText: String,
+    var wrongAnswerText: String = "",
 
     @Column(length = 5048)
-    var fact: String,
+    var fact: String = "",
 
-    var dataUrl: String?,
-    var dataType: TestDataType
+    var dataUrl: String? = null,
+    var dataType: TestDataType = TestDataType.Text
 )

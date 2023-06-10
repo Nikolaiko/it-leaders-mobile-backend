@@ -8,17 +8,21 @@ import ru.mobile.art.mobileArtBackend.dto.auth.*
 import ru.mobile.art.mobileArtBackend.dto.user.UserDataResponseDTO
 import ru.mobile.art.mobileArtBackend.dto.user.UserInterestsDTO
 import ru.mobile.art.mobileArtBackend.model.entities.DataBaseUser
+import ru.mobile.art.mobileArtBackend.model.entities.DataBaseUserTests
 import ru.mobile.art.mobileArtBackend.model.exceptions.UserAlreadyExistException
 import ru.mobile.art.mobileArtBackend.model.exceptions.UserNotFoundException
 import ru.mobile.art.mobileArtBackend.model.exceptions.ValidationException
 import ru.mobile.art.mobileArtBackend.model.news.NewsCategory
 import ru.mobile.art.mobileArtBackend.model.wrongEnumValueMessage
 import ru.mobile.art.mobileArtBackend.model.wrongTokenMessage
+import ru.mobile.art.mobileArtBackend.repositories.TestsRepository
+import ru.mobile.art.mobileArtBackend.repositories.UserTestsRepository
 import ru.mobile.art.mobileArtBackend.repositories.UsersRepository
 
 @Service
 class UserService @Autowired constructor(
     private val usersRepository: UsersRepository,
+    private val userTestsService: UserTestsService,
     private val accessTokenService: AccessTokenService
 ) {
     @Transactional
@@ -86,6 +90,11 @@ class UserService @Autowired constructor(
     @Transactional
     fun setUserInterests(token: String, interests: UserInterestsDTO): UserDataResponseDTO {
         val id: Long = getIdFromToken(token)
+        val userTests = userTestsService.getUserTests(id)
+        if (userTests == null) {
+            userTestsService.createTestsForUser(id)
+        }
+
         val userFromDb = getUserById(id)
         val interestsString = interests.interests.map { it.name }
         val newUser = DataBaseUser(

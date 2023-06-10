@@ -6,16 +6,19 @@ import ru.mobile.art.mobileArtBackend.dto.auth.AuthUserResponseDTO
 import ru.mobile.art.mobileArtBackend.dto.auth.EmailRegisterRequestDTO
 import ru.mobile.art.mobileArtBackend.dto.user.UserDataResponseDTO
 import ru.mobile.art.mobileArtBackend.dto.user.UserInterestsDTO
+import ru.mobile.art.mobileArtBackend.dto.user.UserTestsResponseDTO
 import ru.mobile.art.mobileArtBackend.services.AccessTokenService
 import ru.mobile.art.mobileArtBackend.services.UserService
+import ru.mobile.art.mobileArtBackend.services.UserTestsService
 import java.security.Principal
 
 @RestController
 class UserController @Autowired constructor(
-    private val userService: UserService
+    private val userService: UserService,
+    private val userTestsService: UserTestsService
 ) {
     @GetMapping("/user/profile")
-    fun registerUser(
+    fun getUserData(
         @RequestHeader("Authorization") bearerToken: String
     ): UserDataResponseDTO {
         return userService.getUserData(bearerToken)
@@ -27,5 +30,12 @@ class UserController @Autowired constructor(
         @RequestBody interestsDTO: UserInterestsDTO
     ): UserDataResponseDTO {
         return userService.setUserInterests(bearerToken, interestsDTO)
+    }
+
+    @GetMapping("/user/tests")
+    fun getUserTestsData(
+        @RequestHeader("Authorization") bearerToken: String
+    ): UserTestsResponseDTO {
+        return userTestsService.getUserTestsByToken(bearerToken)
     }
 }

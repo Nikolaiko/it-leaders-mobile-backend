@@ -9,13 +9,13 @@ class EducationTestAnswer constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-    var testId: Long,
+    var testId: Long = 0,
 
     @Column(length = 5048)
-    var answerText: String,
-    var isCorrect: Boolean,
+    var answerText: String = "",
+    var isCorrect: Boolean = false,
 
     @Column(length = 5048)
-    var dataUrl: String?,
-    var dataType: TestDataType,
+    var dataUrl: String? = null,
+    var dataType: TestDataType = TestDataType.Text,
 )

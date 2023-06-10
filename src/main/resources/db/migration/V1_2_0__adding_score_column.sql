@@ -1,0 +1,2 @@
+ALTER TABLE tests
+ADD score int NOT NULL DEFAULT 1;
