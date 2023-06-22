@@ -12,7 +12,7 @@ import ru.mobile.art.mobileArtBackend.services.UserTestsService
 class TestsController @Autowired constructor(
     private val userTestsService: UserTestsService
 ) {
-    @PostMapping("/tests/results")
+    @PostMapping("/api/tests/results")
     fun testResults(
         @RequestHeader("Authorization") bearerToken: String,
         @RequestBody testData: TestResultsDTO

@@ -14,8 +14,7 @@ import ru.mobile.art.mobileArtBackend.services.UserService
 class AuthController @Autowired constructor(
     private val userService: UserService
 ) {
-
-    @PostMapping("/auth/register")
+    @PostMapping("/api/auth/register")
     fun registerUser(
         @RequestBody registerUserRequestDTO: EmailRegisterRequestDTO
     ): AuthUserResponseDTO {
@@ -23,7 +22,7 @@ class AuthController @Autowired constructor(
         return userService.registerUserByEmail(registerUserRequestDTO)
     }
 
-    @PostMapping("/auth/register/vk")
+    @PostMapping("/api/auth/register/vk")
     fun registerUserVK(
         @RequestBody registerUserRequestDTO: VKRegisterRequestDTO
     ): AuthUserResponseDTO {
@@ -31,7 +30,7 @@ class AuthController @Autowired constructor(
         return userService.registerUserByVK(registerUserRequestDTO)
     }
 
-    @PostMapping("/auth/login/email")
+    @PostMapping("/api/auth/login/email")
     fun loginUserByEmail(
         @RequestBody loginUserRequestDTO: EmailLoginUserRequestDTO
     ): AuthUserResponseDTO {
@@ -39,7 +38,7 @@ class AuthController @Autowired constructor(
         return userService.loginUserByEmail(loginUserRequestDTO)
     }
 
-    @PostMapping("/auth/login/vk")
+    @PostMapping("/api/auth/login/vk")
     fun loginUserByVK(
         @RequestBody loginUserRequestDTO: VKLoginRequestDTO
     ): AuthUserResponseDTO {

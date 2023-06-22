@@ -1,6 +1,6 @@
 package ru.mobile.art.mobileArtBackend.dto.user
 
-data class sUserTestsResponseDTO(
+data class UserTestsResponseDTO(
     val id: Long,
     val userId: Long,
     val score: Int,

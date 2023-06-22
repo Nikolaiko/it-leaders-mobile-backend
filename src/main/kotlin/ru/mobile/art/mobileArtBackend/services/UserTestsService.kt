@@ -27,19 +27,9 @@ class UserTestsService @Autowired constructor(
     }
 
     @Transactional
-    fun getUserTestsByToken(token: String): UserTestsResponseDTO {
-        val tokenParts = token.split(" ")
-        val idValue = try {
-            val tokenValue = tokenParts[1]
-            val idString = accessTokenService.claimIdFromToken(tokenValue)
-            idString.toLong()
-        } catch (outOfBound: java.lang.IndexOutOfBoundsException) {
-            throw ValidationException(wrongTokenMessage)
-        } catch (wrongFormat: NumberFormatException) {
-            throw ValidationException(wrongTokenMessage)
-        }
-        return when(val tests = getUserTests(idValue)) {
-            null -> createTestsForUser(idValue).toResponseTestsDTO()
+    fun getUserTestsByToken(id: Long): UserTestsResponseDTO {
+        return when(val tests = getUserTests(id)) {
+            null -> createTestsForUser(id).toResponseTestsDTO()
             else -> tests.toResponseTestsDTO()
         }
     }

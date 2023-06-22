@@ -15,7 +15,7 @@ import ru.mobile.art.mobileArtBackend.services.NewsService
 class NewsController @Autowired constructor(
     private val newsService: NewsService
 ) {
-    @GetMapping("/news")
+    @GetMapping("/api/news")
     fun getNewsByCategory(
         @RequestParam category: NewsCategory
     ): NewsCategoryResponseDTO {
@@ -24,7 +24,7 @@ class NewsController @Autowired constructor(
         )
     }
 
-    @GetMapping("/news/{id}")
+    @GetMapping("/api/news/{id}")
     fun getNewsById(
         @PathVariable id: Long
     ): NewsFullDataResponseDTO {

@@ -7,6 +7,8 @@ import ru.mobile.art.mobileArtBackend.dto.auth.EmailRegisterRequestDTO
 import ru.mobile.art.mobileArtBackend.dto.user.UserDataResponseDTO
 import ru.mobile.art.mobileArtBackend.dto.user.UserInterestsDTO
 import ru.mobile.art.mobileArtBackend.dto.user.UserTestsResponseDTO
+import ru.mobile.art.mobileArtBackend.security.SecurityHelper
+import ru.mobile.art.mobileArtBackend.security.SecurityHelper.getUserId
 import ru.mobile.art.mobileArtBackend.services.AccessTokenService
 import ru.mobile.art.mobileArtBackend.services.UserService
 import ru.mobile.art.mobileArtBackend.services.UserTestsService
@@ -17,25 +19,23 @@ class UserController @Autowired constructor(
     private val userService: UserService,
     private val userTestsService: UserTestsService
 ) {
-    @GetMapping("/user/profile")
-    fun getUserData(
-        @RequestHeader("Authorization") bearerToken: String
-    ): UserDataResponseDTO {
-        return userService.getUserData(bearerToken)
+    @GetMapping("/api/user/profile")
+    fun getUserData(principal: Principal): UserDataResponseDTO {
+        return userService.getUserData(getUserId(principal))
     }
 
-    @PostMapping("/user/interests")
+    @PostMapping("/api/user/interests")
     fun setUserInterests(
-        @RequestHeader("Authorization") bearerToken: String,
+        principal: Principal,
         @RequestBody interestsDTO: UserInterestsDTO
     ): UserDataResponseDTO {
-        return userService.setUserInterests(bearerToken, interestsDTO)
+        return userService.setUserInterests(getUserId(principal), interestsDTO)
     }
 
-    @GetMapping("/user/tests")
+    @GetMapping("/api/user/tests")
     fun getUserTestsData(
-        @RequestHeader("Authorization") bearerToken: String
+        principal: Principal
     ): UserTestsResponseDTO {
-        return userTestsService.getUserTestsByToken(bearerToken)
+        return userTestsService.getUserTestsByToken(getUserId(principal))
     }
 }

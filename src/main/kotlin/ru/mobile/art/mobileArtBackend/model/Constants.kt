@@ -16,3 +16,13 @@ const val testNotFoundMessage = "Test not found"
 const val newsNotFoundMessage = "News not found"
 const val wrongTokenMessage = "Wrong token format"
 const val wrongEnumValueMessage = "Wrong enum value"
+
+const val apiLogin = "apiLogin"
+const val apiPassword = "apiPassword"
+
+const val authorityUser = "authorityUser"
+const val authorityService = "authorityService"
+
+const val authorityClaimName = "authorityClaims"
+
+const val memoryUserDetailsService = "memoryUserDetailsService"
