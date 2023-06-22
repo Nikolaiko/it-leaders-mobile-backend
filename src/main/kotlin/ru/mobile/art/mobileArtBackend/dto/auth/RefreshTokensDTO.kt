@@ -1,6 +1,5 @@
 package ru.mobile.art.mobileArtBackend.dto.auth
 
-data class AuthUserResponseDTO(
-    val accessToken: String,
+data class RefreshTokensDTO(
     val refreshToken: String
 )

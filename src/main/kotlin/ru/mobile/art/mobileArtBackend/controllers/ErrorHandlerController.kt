@@ -11,6 +11,14 @@ import ru.mobile.art.mobileArtBackend.model.exceptions.*
 class ErrorHandlerController {
 
     @ExceptionHandler
+    fun unauthorizedErrorHandler(exception: UnauthorizedException): ResponseEntity<ErrorMessageDTO> {
+        return ResponseEntity(
+            ErrorMessageDTO(exception.message),
+            HttpStatus.UNAUTHORIZED
+        )
+    }
+
+    @ExceptionHandler
     fun userAlreadyExistHandler(exception: UserAlreadyExistException): ResponseEntity<ErrorMessageDTO> {
         return ResponseEntity(
             ErrorMessageDTO(exception.message),

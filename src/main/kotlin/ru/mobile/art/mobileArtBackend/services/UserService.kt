@@ -24,7 +24,7 @@ import ru.mobile.art.mobileArtBackend.repositories.UsersRepository
 class UserService @Autowired constructor(
     private val usersRepository: UsersRepository,
     private val userTestsService: UserTestsService,
-    private val accessTokenService: AccessTokenService
+    private val authService: AuthService
 ) {
     @Transactional
     fun registerUserByEmail(request: EmailRegisterRequestDTO): AuthUserResponseDTO {
@@ -37,8 +37,7 @@ class UserService @Autowired constructor(
                     birthDate = request.birthDate
                 )
                 val newId: Long = usersRepository.save(newUser).id!!
-                val token = accessTokenService.createToken(newId, authorityUser)
-                AuthUserResponseDTO(accessToken = token)
+                authService.createTokens(newId, authorityUser)
             }
             else -> throw UserAlreadyExistException()
         }
@@ -59,8 +58,7 @@ class UserService @Autowired constructor(
             }
             else -> dbUser.id!!
         }
-        val token = accessTokenService.createToken(userId, authorityUser)
-        return AuthUserResponseDTO(accessToken = token)
+        return authService.createTokens(userId, authorityUser)
     }
 
     @Transactional
@@ -68,8 +66,7 @@ class UserService @Autowired constructor(
         val foundUser = usersRepository.findByEmail(request.email)
         return when {
             foundUser != null && foundUser.password == request.password -> {
-                val token = accessTokenService.createToken(foundUser.id!!, authorityUser)
-                AuthUserResponseDTO(accessToken = token)
+                authService.createTokens(foundUser.id!!, authorityUser)
             }
             else -> throw  UserNotFoundException()
         }
@@ -82,8 +79,7 @@ class UserService @Autowired constructor(
             null -> throw  UserNotFoundException()
             else -> {
                 val newId: Long = usersRepository.save(foundUser).id!!
-                val token = accessTokenService.createToken(newId, authorityUser)
-                AuthUserResponseDTO(accessToken = token)
+                authService.createTokens(newId, authorityUser)
             }
         }
     }

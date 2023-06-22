@@ -8,11 +8,16 @@ import ru.mobile.art.mobileArtBackend.dto.auth.*
 import ru.mobile.art.mobileArtBackend.model.emailPattern
 import ru.mobile.art.mobileArtBackend.model.exceptions.ValidationException
 import ru.mobile.art.mobileArtBackend.model.invalidEmailMessage
+import ru.mobile.art.mobileArtBackend.model.wrongTokenMessage
+import ru.mobile.art.mobileArtBackend.services.AccessTokenService
+import ru.mobile.art.mobileArtBackend.services.AuthService
+import ru.mobile.art.mobileArtBackend.services.RefreshTokenService
 import ru.mobile.art.mobileArtBackend.services.UserService
 
 @RestController
 class AuthController @Autowired constructor(
-    private val userService: UserService
+    private val userService: UserService,
+    private val authService: AuthService
 ) {
     @PostMapping("/api/auth/register")
     fun registerUser(
@@ -45,9 +50,24 @@ class AuthController @Autowired constructor(
         return userService.loginUserByVK(loginUserRequestDTO)
     }
 
+    @PostMapping("/api/auth/refresh")
+    fun refreshAccessToken(
+        @RequestBody refreshTokensDTO: RefreshTokensDTO
+    ): AuthUserResponseDTO {
+        validateRefreshToken(refreshTokensDTO)
+        return authService.refreshToken(refreshTokensDTO.refreshToken)
+    }
+
     private fun validateEmail(email: String) {
         if (email.isBlank() || !emailPattern.matcher(email).find()) {
             throw ValidationException(invalidEmailMessage)
+        }
+    }
+
+    private fun validateRefreshToken(refreshTokensDTO: RefreshTokensDTO) {
+        val tokenValue = refreshTokensDTO.refreshToken
+        if (tokenValue.isBlank()) {
+            throw ValidationException(wrongTokenMessage)
         }
     }
 }
