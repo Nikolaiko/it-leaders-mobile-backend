@@ -12,6 +12,7 @@ class BearerAuthenticationEntryPoint: AuthenticationEntryPoint {
         response: HttpServletResponse?,
         authException: AuthenticationException?
     ) {
+        response?.addHeader("WWW-Authenticate", "Bearer realm=mobile")
         response?.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase)
     }
 }
