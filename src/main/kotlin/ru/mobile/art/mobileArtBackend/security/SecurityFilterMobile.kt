@@ -18,17 +18,18 @@ import ru.mobile.art.mobileArtBackend.model.memoryUserDetailsService
 class SecurityFilterMobile {
 
     @Bean
-    @Order(1)
+    @Order(10)
     fun securityFilterChain(
         http: HttpSecurity,
         @Qualifier(memoryUserDetailsService) userDetailsService: UserDetailsService,
         jwtParser: JwtParser
     ): SecurityFilterChain {
         return SecurityHelper.configureSecurity(http)
+            .securityMatcher("/api/tests/**", "/api/user/**")
             .userDetailsService(userDetailsService)
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/api/tests/**", "/api/user/**")
+                    .anyRequest()
                     .hasAuthority(authorityUser)
             }
             .addFilterAfter(AuthTokenFilter(jwtParser), BasicAuthenticationFilter::class.java)
@@ -40,16 +41,17 @@ class SecurityFilterMobile {
     }
 
     @Bean
-    @Order(10)
+    @Order(1)
     fun basicFilterChain(
         http: HttpSecurity,
         @Qualifier(memoryUserDetailsService) userDetailsService: UserDetailsService
     ): SecurityFilterChain {
         return SecurityHelper.configureSecurity(http)
+            .securityMatcher("/api/auth/**", "/api/news/**")
             .userDetailsService(userDetailsService)
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/api/auth/**", "/api/news/**")
+                    .anyRequest()
                     .hasAuthority(authorityService)
             }
             .httpBasic(withDefaults())
